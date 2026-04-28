@@ -24,14 +24,14 @@
     "indentWidth": 2,
     "includes": [
       "**/*",
-      "!a.json",
       "!node_modules",
       "!coverage",
       "!.pnpm-store",
       "!pnpm-lock.yaml",
       "!package-lock.json",
       "!pnpm-lock.yaml",
-      "!yarn.lock"
+      "!yarn.lock",
+      "!routeTree.gen.ts"
     ]
   },
   "assist": {

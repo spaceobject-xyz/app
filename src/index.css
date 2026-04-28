@@ -4,7 +4,7 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
 
-@source "./App.tsx";
+@source "./**/*.tsx";
 
 @custom-variant dark (&:is(.dark *));
 
