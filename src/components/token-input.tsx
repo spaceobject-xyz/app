@@ -96,7 +96,7 @@ export const TokenInput: React.FC<TokenInputProps> = ({
               />
               <AvatarFallback>{tokenInfo?.name.at(0) ?? "?"}</AvatarFallback>
               {chainInfo && (
-                <AvatarBadge className="bg-background text-foreground ring-1 ring-muted">
+                <AvatarBadge className="bg-background text-foreground p-0.5">
                   <img
                     src={getChainIconSrc(chainInfo.slug) ?? undefined}
                     alt={chainInfo.slug}
@@ -345,7 +345,7 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
                           />
                           <AvatarFallback>{name.at(0) ?? "?"}</AvatarFallback>
                           {chainInfo && (
-                            <AvatarBadge className="bg-background text-foreground ring-1 ring-muted">
+                            <AvatarBadge className="bg-background text-foreground p-px">
                               <img
                                 src={
                                   getChainIconSrc(chainInfo.slug) ?? undefined
