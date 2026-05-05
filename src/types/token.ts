@@ -20,13 +20,16 @@ export type Token<TChain extends Chain = Chain> =
       : never
     : never;
 
-export type TokenInfo<TChain extends Chain> = {
-  id: Token<TChain>;
+export type TokenInfo<
+  TChain extends Chain,
+  TToken extends Token<TChain> = Token<TChain>,
+> = {
+  id: TToken;
   name: string;
   symbol: string;
   decimals: number;
   address: string;
-  chainId: Token<TChain> extends `${infer Chain}/${string}` ? Chain : never;
+  chainId: TToken extends `${infer ChainId}/${string}` ? ChainId : never;
 };
 
 export type SelectedToken<TToken extends Token> = {

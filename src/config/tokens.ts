@@ -8,7 +8,7 @@ import type {
 } from "./chains";
 
 type TokenInfoMap<TChain extends AvailableChain> = {
-  [TokenKey in Token<TChain>]: TokenInfo<TChain>;
+  [TokenKey in Token<TChain>]: TokenInfo<TChain, TokenKey>;
 };
 
 type TokenInfoMapByChain<TChain extends AvailableChain> = {
