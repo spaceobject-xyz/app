@@ -12,19 +12,11 @@ export const Route = createFileRoute("/")({
   component: Swap,
 });
 
-export const DEFAULT_SELL_TOKEN =
-  "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501";
-export const DEFAULT_BUY_TOKEN = "eip155:1/slip44:60";
-
 function Swap() {
   const [selectedSellToken, setSelectedSellToken] =
-    useState<SelectedToken<AvailableToken> | null>({
-      token: DEFAULT_SELL_TOKEN,
-    });
+    useState<SelectedToken<AvailableToken> | null>(null);
   const [selectedBuyToken, setSelectedBuyToken] =
-    useState<SelectedToken<AvailableToken> | null>({
-      token: DEFAULT_BUY_TOKEN,
-    });
+    useState<SelectedToken<AvailableToken> | null>(null);
 
   return (
     <div className="w-full flex flex-col mx-auto items-center gap-4 md:pt-36">
@@ -54,6 +46,11 @@ function Swap() {
             variant="secondary"
             size="icon"
             className="group absolute z-10 bg-background hover:bg-background ring-1 ring-muted"
+            onClick={() => {
+              const _selectedBuyToken = selectedBuyToken;
+              setSelectedSellToken(_selectedBuyToken);
+              setSelectedBuyToken(selectedSellToken);
+            }}
           >
             <HugeiconsIcon
               icon={ChevronDown}
@@ -61,6 +58,7 @@ function Swap() {
             />
           </Button>
           <TokenInput
+            readOnly
             title="Buy"
             selectedToken={selectedBuyToken}
             onSelectedToken={(selectedToken) => {
