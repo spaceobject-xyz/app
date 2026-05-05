@@ -1,6 +1,6 @@
 import { DashboardCircleIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   AvailableChain,
@@ -44,12 +44,14 @@ export interface TokenInputProps {
   onSelectedToken: (
     selectedToken: SelectedToken<AvailableToken> | null
   ) => void;
+  readOnly?: boolean;
 }
 
 export const TokenInput: React.FC<TokenInputProps> = ({
   title,
   selectedToken,
   onSelectedToken,
+  readOnly,
 }) => {
   const tokenInfo = useMemo(
     () => (selectedToken?.token ? getToken(selectedToken?.token) : null),
@@ -64,11 +66,15 @@ export const TokenInput: React.FC<TokenInputProps> = ({
   const [tokenSelectorDialogOpen, setTokenSelectorDialogOpen] =
     useState<boolean>(false);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
   return (
     <InputGroup className="group">
       <InputGroupAddon align="block-start">{title}</InputGroupAddon>
       <div className="flex w-full justify-between items-center gap-2">
         <InputGroupNumberInput
+          ref={inputRef}
+          readOnly={readOnly}
           autoComplete="off"
           formatted
           placeholder="0"
@@ -96,8 +102,9 @@ export const TokenInput: React.FC<TokenInputProps> = ({
               />
               <AvatarFallback>{tokenInfo?.name.at(0) ?? "?"}</AvatarFallback>
               {chainInfo && (
-                <AvatarBadge className="bg-background text-foreground p-0.5">
+                <AvatarBadge className="bg-background text-foreground">
                   <img
+                    className="scale-125"
                     src={getChainIconSrc(chainInfo.slug) ?? undefined}
                     alt={chainInfo.slug}
                   />
@@ -108,7 +115,10 @@ export const TokenInput: React.FC<TokenInputProps> = ({
           </Button>
           <TokenSelectorDialog
             open={tokenSelectorDialogOpen}
-            onOpenChange={setTokenSelectorDialogOpen}
+            onOpenChange={(open) => {
+              setTokenSelectorDialogOpen(open);
+              if (!open && !readOnly) inputRef.current?.focus();
+            }}
             token={selectedToken?.token}
             onTokenSelect={(token) => {
               onSelectedToken({
@@ -192,7 +202,7 @@ export const TokenInput: React.FC<TokenInputProps> = ({
             ></Badge>
           </div>
         )}
-        {tokenInfo && (
+        {tokenInfo ? (
           <Badge
             variant="ghost"
             render={
@@ -210,6 +220,8 @@ export const TokenInput: React.FC<TokenInputProps> = ({
               </Button>
             }
           ></Badge>
+        ) : (
+          <div className="h-5"></div>
         )}
       </InputGroupAddon>
     </InputGroup>
@@ -345,8 +357,9 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
                           />
                           <AvatarFallback>{name.at(0) ?? "?"}</AvatarFallback>
                           {chainInfo && (
-                            <AvatarBadge className="bg-background text-foreground p-px">
+                            <AvatarBadge className="bg-background text-foreground">
                               <img
+                                className="scale-125"
                                 src={
                                   getChainIconSrc(chainInfo.slug) ?? undefined
                                 }
