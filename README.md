@@ -1,7 +1,7 @@
 <div align="center">
   <img width="120" height="120" src="assets/logo.svg" />
 
-  <h1>Space Object — App</h1>
+  <h1>Space Object 🪐</h1>
 
   <p align="center">
     <a href="https://spaceobject.xyz/"><img alt="Website" src="https://img.shields.io/badge/website-spaceobject.xyz-1a1a1a" /></a>
