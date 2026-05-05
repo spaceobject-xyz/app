@@ -10,11 +10,11 @@ type ChainInfoMap<TChain extends Chain> = {
 };
 
 export const availableMainnetChains = {
-  "bip122:000000000019d6689c085ae165831e93": {
-    id: "bip122:000000000019d6689c085ae165831e93",
-    name: "Bitcoin",
-    slug: "bitcoin",
-  },
+  // "bip122:000000000019d6689c085ae165831e93": {
+  //   id: "bip122:000000000019d6689c085ae165831e93",
+  //   name: "Bitcoin",
+  //   slug: "bitcoin",
+  // },
   "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
     id: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
     name: "Solana",

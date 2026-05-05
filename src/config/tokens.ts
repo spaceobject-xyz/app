@@ -16,14 +16,14 @@ type TokenInfoMapByChain<TChain extends AvailableChain> = {
 };
 
 export const availableMainnetTokens = {
-  "bip122:000000000019d6689c085ae165831e93/slip44:0": {
-    id: "bip122:000000000019d6689c085ae165831e93/slip44:0",
-    name: "Bitcoin",
-    symbol: "BTC",
-    address: "",
-    decimals: 8,
-    chainId: "bip122:000000000019d6689c085ae165831e93",
-  },
+  // "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+  //   id: "bip122:000000000019d6689c085ae165831e93/slip44:0",
+  //   name: "Bitcoin",
+  //   symbol: "BTC",
+  //   address: "",
+  //   decimals: 8,
+  //   chainId: "bip122:000000000019d6689c085ae165831e93",
+  // },
   "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
     id: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
     name: "Solana",
