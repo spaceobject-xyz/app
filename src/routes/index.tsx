@@ -3,20 +3,33 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
-import type { AvailableToken } from "@/config/tokens";
-import type { SelectedToken } from "@/types/token";
 import { TokenInput } from "@/components/token-input";
 import { Button } from "@/components/ui/button";
+import { useCluster } from "@/hooks/use-cluster";
+import { isToken } from "@/lib/tokens";
 
 export const Route = createFileRoute("/")({
   component: Swap,
+  validateSearch: (
+    search: Record<string, unknown>
+  ): { from?: string; to?: string } => {
+    const from = typeof search.from === "string" ? search.from : undefined;
+    const to = typeof search.to === "string" ? search.to : undefined;
+
+    return {
+      from,
+      to: to === from ? undefined : to,
+    };
+  },
 });
 
 function Swap() {
-  const [selectedSellToken, setSelectedSellToken] =
-    useState<SelectedToken<AvailableToken> | null>(null);
-  const [selectedBuyToken, setSelectedBuyToken] =
-    useState<SelectedToken<AvailableToken> | null>(null);
+  const { cluster } = useCluster();
+  const { from, to } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  const [sellAmount, setSellAmount] = useState<number | null>(null);
+  const [buyAmount, setBuyAmount] = useState<number | null>(null);
 
   return (
     <div className="w-full flex flex-col mx-auto items-center gap-4 md:pt-36">
@@ -30,16 +43,22 @@ function Swap() {
         <div className="flex flex-col items-center justify-center gap-2">
           <TokenInput
             title="Sell"
-            selectedToken={selectedSellToken}
-            onSelectedToken={(selectedToken) => {
-              if (
-                selectedToken?.token &&
-                selectedToken.token === selectedBuyToken?.token
-              )
-                setSelectedBuyToken(selectedSellToken);
+            token={isToken(from, cluster) ? from : null}
+            onTokenChange={(token) => {
+              navigate({
+                search: (prev) => {
+                  const next = token ?? undefined;
+                  if (next && next === prev.to)
+                    return { ...prev, from: next, to: prev.from };
 
-              return setSelectedSellToken(selectedToken);
+                  return { ...prev, from: next };
+                },
+                replace: true,
+              });
             }}
+            amount={sellAmount}
+            onAmountChange={setSellAmount}
+            balance={0}
           />
           <Button
             tabIndex={-1}
@@ -47,9 +66,13 @@ function Swap() {
             size="icon"
             className="group absolute z-10 bg-background hover:bg-background ring-1 ring-muted"
             onClick={() => {
-              const _selectedBuyToken = selectedBuyToken;
-              setSelectedSellToken(_selectedBuyToken);
-              setSelectedBuyToken(selectedSellToken);
+              navigate({
+                search: (prev) => ({ from: prev.to, to: prev.from }),
+                replace: true,
+              });
+
+              setBuyAmount(null);
+              setSellAmount(buyAmount);
             }}
           >
             <HugeiconsIcon
@@ -60,16 +83,22 @@ function Swap() {
           <TokenInput
             readOnly
             title="Buy"
-            selectedToken={selectedBuyToken}
-            onSelectedToken={(selectedToken) => {
-              if (
-                selectedToken?.token &&
-                selectedToken.token === selectedSellToken?.token
-              )
-                setSelectedSellToken(selectedBuyToken);
+            token={isToken(to, cluster) ? to : null}
+            onTokenChange={(token) => {
+              navigate({
+                search: (prev) => {
+                  const next = token ?? undefined;
+                  if (next && next === prev.from)
+                    return { ...prev, from: prev.to, to: next };
 
-              return setSelectedBuyToken(selectedToken);
+                  return { ...prev, to: next };
+                },
+                replace: true,
+              });
             }}
+            amount={buyAmount}
+            onAmountChange={setBuyAmount}
+            balance={0}
           />
         </div>
         <div className="flex w-full items-center justify-center gap-2">

@@ -31,10 +31,5 @@ export type TokenInfo<
   address: string;
   imageUrl: string;
   networkId: TToken extends `${infer NetworkId}/${string}` ? NetworkId : never;
-};
-
-export type SelectedToken<TToken extends Token> = {
-  token?: TToken | null;
-  amount?: number | null;
-  balance?: number | null;
+  networkBadge: boolean;
 };

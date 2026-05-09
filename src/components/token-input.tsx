@@ -8,7 +8,6 @@ import type {
   AvailableTestnetNetwork,
 } from "@/config/networks";
 import type { AvailableToken } from "@/config/tokens";
-import type { SelectedToken } from "@/types/token";
 import {
   availableMainnetNetworks,
   availableTestnetNetworks,
@@ -40,28 +39,28 @@ import { Separator } from "./ui/separator";
 
 export interface TokenInputProps {
   title: string;
-  selectedToken: SelectedToken<AvailableToken> | null;
-  onSelectedToken: (
-    selectedToken: SelectedToken<AvailableToken> | null
-  ) => void;
+  token: AvailableToken | null;
+  onTokenChange: (token: AvailableToken | null) => void;
+  amount: number | null;
+  onAmountChange: (amount: number | null) => void;
+  balance: number;
   readOnly?: boolean;
 }
 
 export const TokenInput: React.FC<TokenInputProps> = ({
   title,
-  selectedToken,
-  onSelectedToken,
+  token,
+  onTokenChange,
+  amount,
+  onAmountChange,
+  balance,
   readOnly,
 }) => {
-  const tokenInfo = useMemo(
-    () => (selectedToken?.token ? getToken(selectedToken?.token) : null),
-    [selectedToken]
-  );
+  const tokenInfo = useMemo(() => (token ? getToken(token) : null), [token]);
   const networkInfo = useMemo(
     () => (tokenInfo ? getNetwork(tokenInfo.networkId) : null),
     [tokenInfo]
   );
-  const balance = selectedToken?.balance;
 
   const [tokenSelectorDialogOpen, setTokenSelectorDialogOpen] =
     useState<boolean>(false);
@@ -79,13 +78,8 @@ export const TokenInput: React.FC<TokenInputProps> = ({
           formatted
           placeholder="0"
           className="text-4xl md:text-4xl font-mono"
-          onChange={(amount) => {
-            onSelectedToken({
-              ...selectedToken,
-              amount,
-            });
-          }}
-          value={selectedToken?.amount}
+          onChange={onAmountChange}
+          value={amount}
         />
         <InputGroupAddon align="inline-end">
           <Button
@@ -97,7 +91,7 @@ export const TokenInput: React.FC<TokenInputProps> = ({
             <Avatar size="lg">
               <AvatarImage src={tokenInfo?.imageUrl} />
               <AvatarFallback>{tokenInfo?.name.at(0) ?? "?"}</AvatarFallback>
-              {networkInfo && (
+              {networkInfo && tokenInfo?.networkBadge && (
                 <AvatarBadge>
                   <img src={networkInfo.imageUrl} alt={networkInfo.id} />
                 </AvatarBadge>
@@ -111,87 +105,53 @@ export const TokenInput: React.FC<TokenInputProps> = ({
               setTokenSelectorDialogOpen(open);
               if (!open && !readOnly) inputRef.current?.focus();
             }}
-            token={selectedToken?.token}
-            onTokenSelect={(token) => {
-              onSelectedToken({
-                ...selectedToken,
-                token,
-              });
-            }}
-          ></TokenSelectorDialog>
+            token={token}
+            onTokenSelected={onTokenChange}
+          />
         </InputGroupAddon>
       </div>
       <InputGroupAddon align="block-end" className="justify-end">
-        {tokenInfo && balance && (
-          <div className="grid grid-cols-4 gap-1">
+        {tokenInfo && !!balance && !readOnly && (
+          <div className="grid grid-cols-3 gap-1">
             <Badge
-              variant="outline"
+              variant="ghost"
               className="opacity-0 group-hover:opacity-100 transition-opacity delay-130"
               render={
                 <Button
-                  variant="outline"
-                  onClick={() => {
-                    onSelectedToken({
-                      ...selectedToken,
-                      amount: balance * 0.25,
-                    });
-                  }}
+                  tabIndex={-1}
+                  variant="ghost"
+                  onClick={() => onAmountChange(balance * 0.25)}
                 >
                   25%
                 </Button>
               }
-            ></Badge>
+            />
             <Badge
-              variant="outline"
+              variant="ghost"
               className="opacity-0 group-hover:opacity-100 transition-opacity delay-120"
               render={
                 <Button
-                  variant="outline"
-                  onClick={() => {
-                    onSelectedToken({
-                      ...selectedToken,
-                      amount: balance * 0.5,
-                    });
-                  }}
+                  tabIndex={-1}
+                  variant="ghost"
+                  onClick={() => onAmountChange(balance * 0.5)}
                 >
                   50%
                 </Button>
               }
-            ></Badge>
+            />
             <Badge
-              variant="outline"
+              variant="ghost"
               className="opacity-0 group-hover:opacity-100 transition-opacity delay-110"
               render={
                 <Button
+                  tabIndex={-1}
                   variant="outline"
-                  onClick={() => {
-                    onSelectedToken({
-                      ...selectedToken,
-                      amount: balance * 0.75,
-                    });
-                  }}
+                  onClick={() => onAmountChange(balance * 0.75)}
                 >
                   75%
                 </Button>
               }
-            ></Badge>
-            <Badge
-              variant="outline"
-              className="opacity-0 group-hover:opacity-100 transition-opacity delay-100"
-              render={
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    onSelectedToken({
-                      ...selectedToken,
-                      amount: balance,
-                    });
-                  }}
-                >
-                  Max
-                </Button>
-              }
-            ></Badge>
+            />
           </div>
         )}
         {tokenInfo ? (
@@ -201,17 +161,12 @@ export const TokenInput: React.FC<TokenInputProps> = ({
               <Button
                 variant="ghost"
                 tabIndex={-1}
-                onClick={() => {
-                  onSelectedToken({
-                    ...selectedToken,
-                    amount: balance ?? 0,
-                  });
-                }}
+                onClick={() => !readOnly && onAmountChange(balance)}
               >
                 {balance ?? 0} {tokenInfo.symbol}
               </Button>
             }
-          ></Badge>
+          />
         ) : (
           <div className="h-5"></div>
         )}
@@ -224,14 +179,14 @@ export interface TokenSelectorDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   token?: AvailableToken | null;
-  onTokenSelect: (token: AvailableToken | null) => void;
+  onTokenSelected: (token: AvailableToken | null) => void;
 }
 
 export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
   open,
   onOpenChange,
   token,
-  onTokenSelect,
+  onTokenSelected,
 }) => {
   const { cluster } = useCluster();
   const [networkFilter, setNetworkFilter] = useState(() => {
@@ -327,42 +282,44 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
           <Separator />
 
           <div className="flex flex-col w-full items-center gap-2 h-96 overflow-y-auto">
-            {tokens.map(({ id, name, symbol, networkId, imageUrl }) => {
-              const networkInfo = getNetwork(networkId);
+            {tokens.map(
+              ({ id, name, symbol, networkId, networkBadge, imageUrl }) => {
+                const networkInfo = getNetwork(networkId);
 
-              return (
-                <Item
-                  key={id}
-                  variant={id === token ? "muted" : "outline"}
-                  onClick={() => {
-                    onTokenSelect(id as AvailableToken);
-                    onOpenChange(false);
-                  }}
-                  render={
-                    <button type="button">
-                      <ItemMedia>
-                        <Avatar size="lg">
-                          <AvatarImage src={imageUrl} />
-                          <AvatarFallback>{name.at(0) ?? "?"}</AvatarFallback>
-                          {networkInfo && (
-                            <AvatarBadge>
-                              <img
-                                src={networkInfo.imageUrl}
-                                alt={networkInfo.id}
-                              />
-                            </AvatarBadge>
-                          )}
-                        </Avatar>
-                      </ItemMedia>
-                      <ItemContent>
-                        <ItemTitle>{symbol}</ItemTitle>
-                        <ItemDescription>{name}</ItemDescription>
-                      </ItemContent>
-                    </button>
-                  }
-                />
-              );
-            })}
+                return (
+                  <Item
+                    key={id}
+                    variant={id === token ? "muted" : "outline"}
+                    onClick={() => {
+                      onTokenSelected(id as AvailableToken);
+                      onOpenChange(false);
+                    }}
+                    render={
+                      <button type="button">
+                        <ItemMedia>
+                          <Avatar size="lg">
+                            <AvatarImage src={imageUrl} />
+                            <AvatarFallback>{name.at(0) ?? "?"}</AvatarFallback>
+                            {networkInfo && networkBadge && (
+                              <AvatarBadge>
+                                <img
+                                  src={networkInfo.imageUrl}
+                                  alt={networkInfo.id}
+                                />
+                              </AvatarBadge>
+                            )}
+                          </Avatar>
+                        </ItemMedia>
+                        <ItemContent>
+                          <ItemTitle>{symbol}</ItemTitle>
+                          <ItemDescription>{name}</ItemDescription>
+                        </ItemContent>
+                      </button>
+                    }
+                  />
+                );
+              }
+            )}
           </div>
         </div>
       </DialogContent>

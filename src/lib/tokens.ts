@@ -6,6 +6,7 @@ import type {
 import type {
   AvailableMainnetToken,
   AvailableTestnetToken,
+  AvailableToken,
 } from "@/config/tokens";
 import type { Cluster } from "@/types/cluster";
 import type { Token, TokenInfo } from "@/types/token";
@@ -13,6 +14,15 @@ import {
   availableMainnetTokens,
   availableTestnetTokens,
 } from "@/config/tokens";
+
+export const isToken = (
+  value: unknown,
+  cluster: Cluster = "mainnet"
+): value is AvailableToken =>
+  typeof value === "string" &&
+  (cluster === "mainnet"
+    ? value in availableMainnetTokens
+    : value in availableTestnetTokens);
 
 export const getToken = (
   id: Token<AvailableNetwork>,
