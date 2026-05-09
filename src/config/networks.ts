@@ -1,15 +1,15 @@
 import type {
-  Chain,
-  ChainInfo,
-  MainnetChain,
-  TestnetChain,
-} from "@/types/chain";
+  MainnetNetwork,
+  Network,
+  NetworkInfo,
+  TestnetNetwork,
+} from "@/types/network";
 
-type ChainInfoMap<TChain extends Chain> = {
-  [ChainKey in TChain]?: ChainInfo<ChainKey>;
+type NetworkInfoMap<TNetwork extends Network> = {
+  [NetworkKey in TNetwork]?: NetworkInfo<NetworkKey>;
 };
 
-export const availableMainnetChains = {
+export const availableMainnetNetworks = {
   // "bip122:000000000019d6689c085ae165831e93": {
   //   id: "bip122:000000000019d6689c085ae165831e93",
   //   name: "Bitcoin",
@@ -30,10 +30,10 @@ export const availableMainnetChains = {
     name: "Base",
     slug: "base",
   },
-} as const satisfies ChainInfoMap<MainnetChain>;
-export type AvailableMainnetChain = keyof typeof availableMainnetChains;
+} as const satisfies NetworkInfoMap<MainnetNetwork>;
+export type AvailableMainnetNetwork = keyof typeof availableMainnetNetworks;
 
-export const availableTestnetChains = {
+export const availableTestnetNetworks = {
   "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": {
     id: "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
     name: "Solana Devnet",
@@ -44,7 +44,9 @@ export const availableTestnetChains = {
     name: "Ethereum Sepolia",
     slug: "ethereum",
   },
-} as const satisfies ChainInfoMap<TestnetChain>;
-export type AvailableTestnetChain = keyof typeof availableTestnetChains;
+} as const satisfies NetworkInfoMap<TestnetNetwork>;
+export type AvailableTestnetNetwork = keyof typeof availableTestnetNetworks;
 
-export type AvailableChain = AvailableMainnetChain | AvailableTestnetChain;
+export type AvailableNetwork =
+  | AvailableMainnetNetwork
+  | AvailableTestnetNetwork;

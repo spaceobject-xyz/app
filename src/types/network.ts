@@ -1,4 +1,4 @@
-export const mainnetChains = [
+export const mainnetNetworks = [
   "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
   "eip155:1",
   "eip155:137",
@@ -9,9 +9,9 @@ export const mainnetChains = [
   "eip155:8453",
   "bip122:000000000019d6689c085ae165831e93",
 ] as const;
-export type MainnetChain = (typeof mainnetChains)[number];
+export type MainnetNetwork = (typeof mainnetNetworks)[number];
 
-export const testnetChains = [
+export const testnetNetworks = [
   "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
   "eip155:11155111",
   "eip155:80002",
@@ -22,13 +22,13 @@ export const testnetChains = [
   "eip155:84532",
   "bip122:000000000933ea01ad0ee984209779ba",
 ] as const;
-export type TestnetChain = (typeof testnetChains)[number];
+export type TestnetNetwork = (typeof testnetNetworks)[number];
 
-export const networks = [...mainnetChains, ...testnetChains];
-export type Chain = (typeof networks)[number];
+export const networks = [...mainnetNetworks, ...testnetNetworks];
+export type Network = (typeof networks)[number];
 
-export type ChainInfo<TChain extends Chain> = {
-  id: TChain;
+export type NetworkInfo<TNetwork extends Network> = {
+  id: TNetwork;
   name: string;
   slug: string;
 };

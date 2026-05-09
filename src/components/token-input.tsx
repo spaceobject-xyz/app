@@ -3,22 +3,22 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type {
-  AvailableChain,
-  AvailableMainnetChain,
-  AvailableTestnetChain,
-} from "@/config/chains";
+  AvailableMainnetNetwork,
+  AvailableNetwork,
+  AvailableTestnetNetwork,
+} from "@/config/networks";
 import type { AvailableToken } from "@/config/tokens";
 import type { SelectedToken } from "@/types/token";
 import {
-  availableMainnetChains,
-  availableTestnetChains,
-} from "@/config/chains";
+  availableMainnetNetworks,
+  availableTestnetNetworks,
+} from "@/config/networks";
 import {
-  availableMainnetTokenByChains,
-  availableTestnetTokenByChains,
+  availableMainnetTokenByNetworks,
+  availableTestnetTokenByNetworks,
 } from "@/config/tokens";
 import { useCluster } from "@/hooks/use-cluster";
-import { getChain, getChainIconSrc } from "@/lib/chains";
+import { getNetwork, getNetworkIconSrc } from "@/lib/networks";
 import { typedValues } from "@/lib/objects";
 import { getToken, getTokenIconSrc } from "@/lib/tokens";
 
@@ -57,8 +57,8 @@ export const TokenInput: React.FC<TokenInputProps> = ({
     () => (selectedToken?.token ? getToken(selectedToken?.token) : null),
     [selectedToken]
   );
-  const chainInfo = useMemo(
-    () => (tokenInfo ? getChain(tokenInfo.chainId) : null),
+  const networkInfo = useMemo(
+    () => (tokenInfo ? getNetwork(tokenInfo.networkId) : null),
     [tokenInfo]
   );
   const balance = selectedToken?.balance;
@@ -101,12 +101,12 @@ export const TokenInput: React.FC<TokenInputProps> = ({
                 }
               />
               <AvatarFallback>{tokenInfo?.name.at(0) ?? "?"}</AvatarFallback>
-              {chainInfo && (
+              {networkInfo && (
                 <AvatarBadge className="bg-background text-foreground">
                   <img
                     className="scale-125"
-                    src={getChainIconSrc(chainInfo.slug) ?? undefined}
-                    alt={chainInfo.slug}
+                    src={getNetworkIconSrc(networkInfo.slug) ?? undefined}
+                    alt={networkInfo.slug}
                   />
                 </AvatarBadge>
               )}
@@ -242,41 +242,41 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
   onTokenSelect,
 }) => {
   const { cluster } = useCluster();
-  const [chainFilter, setChainFilter] = useState(() => {
+  const [networkFilter, setNetworkFilter] = useState(() => {
     if (!token) return null;
-    const [chainId] = token.split("/");
+    const [networkId] = token.split("/");
 
-    return getChain(chainId as AvailableChain);
+    return getNetwork(networkId as AvailableNetwork);
   });
-  const chains = useMemo(
+  const networks = useMemo(
     () =>
       cluster === "mainnet"
-        ? typedValues(availableMainnetChains)
-        : typedValues(availableTestnetChains),
+        ? typedValues(availableMainnetNetworks)
+        : typedValues(availableTestnetNetworks),
     [cluster]
   );
   const tokens = useMemo(
     () =>
-      chainFilter
+      networkFilter
         ? cluster === "mainnet"
-          ? availableMainnetTokenByChains[
-              chainFilter.id as AvailableMainnetChain
+          ? availableMainnetTokenByNetworks[
+              networkFilter.id as AvailableMainnetNetwork
             ]
-          : availableTestnetTokenByChains[
-              chainFilter.id as AvailableTestnetChain
+          : availableTestnetTokenByNetworks[
+              networkFilter.id as AvailableTestnetNetwork
             ]
         : cluster === "mainnet"
-          ? typedValues(availableMainnetTokenByChains).flat()
-          : typedValues(availableTestnetTokenByChains).flat(),
-    [cluster, chainFilter]
+          ? typedValues(availableMainnetTokenByNetworks).flat()
+          : typedValues(availableTestnetTokenByNetworks).flat(),
+    [cluster, networkFilter]
   );
 
   useEffect(() => {
     if (!open) return;
-    if (!token) return setChainFilter(null);
+    if (!token) return setNetworkFilter(null);
 
-    const [chainId] = token.split("/");
-    setChainFilter(getChain(chainId as AvailableChain));
+    const [networkId] = token.split("/");
+    setNetworkFilter(getNetwork(networkId as AvailableNetwork));
   }, [open, token]);
 
   return (
@@ -288,9 +288,9 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
         <div className="flex flex-col gap-4 overflow-hidden w-full">
           <div className="flex items-center gap-2 overflow-x-auto shrink-0">
             <Item
-              variant={chainFilter === null ? "muted" : "outline"}
+              variant={networkFilter === null ? "muted" : "outline"}
               className="flex shrink-0 w-30 items-center justify-center gap-2"
-              onClick={() => setChainFilter(null)}
+              onClick={() => setNetworkFilter(null)}
               render={
                 <button type="button" className="hover:bg-secondary/30">
                   <ItemHeader className="items-center justify-center">
@@ -304,29 +304,29 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
                     </Avatar>
                   </ItemHeader>
                   <ItemContent className="items-center justify-center">
-                    <ItemTitle>All chains</ItemTitle>
+                    <ItemTitle>All networks</ItemTitle>
                   </ItemContent>
                 </button>
               }
             />
-            {chains.map((chain) => (
+            {networks.map((network) => (
               <Item
-                key={chain.id}
-                variant={chainFilter?.id === chain.id ? "muted" : "outline"}
+                key={network.id}
+                variant={networkFilter?.id === network.id ? "muted" : "outline"}
                 className="flex shrink-0 w-30 items-center justify-center gap-2"
-                onClick={() => setChainFilter(chain)}
+                onClick={() => setNetworkFilter(network)}
                 render={
                   <button type="button" className="hover:bg-secondary/30">
                     <ItemHeader className="items-center justify-center">
                       <Avatar className="size-12">
                         <AvatarImage
-                          src={getChainIconSrc(chain.slug) ?? undefined}
+                          src={getNetworkIconSrc(network.slug) ?? undefined}
                         />
-                        <AvatarFallback>{chain.name.at(0)}</AvatarFallback>
+                        <AvatarFallback>{network.name.at(0)}</AvatarFallback>
                       </Avatar>
                     </ItemHeader>
                     <ItemContent className="items-center justify-center">
-                      <ItemTitle>{chain.name}</ItemTitle>
+                      <ItemTitle>{network.name}</ItemTitle>
                     </ItemContent>
                   </button>
                 }
@@ -337,8 +337,8 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
           <Separator />
 
           <div className="flex flex-col w-full items-center gap-2 h-96 overflow-y-auto">
-            {tokens.map(({ id, name, symbol, chainId }) => {
-              const chainInfo = getChain(chainId);
+            {tokens.map(({ id, name, symbol, networkId }) => {
+              const networkInfo = getNetwork(networkId);
 
               return (
                 <Item
@@ -356,14 +356,15 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
                             src={getTokenIconSrc(symbol) ?? undefined}
                           />
                           <AvatarFallback>{name.at(0) ?? "?"}</AvatarFallback>
-                          {chainInfo && (
+                          {networkInfo && (
                             <AvatarBadge className="bg-background text-foreground">
                               <img
                                 className="scale-125"
                                 src={
-                                  getChainIconSrc(chainInfo.slug) ?? undefined
+                                  getNetworkIconSrc(networkInfo.slug) ??
+                                  undefined
                                 }
-                                alt={chainInfo.slug}
+                                alt={networkInfo.slug}
                               />
                             </AvatarBadge>
                           )}

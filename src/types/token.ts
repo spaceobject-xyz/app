@@ -1,35 +1,35 @@
-import type { Chain } from "./chain";
+import type { Network } from "./network";
 
 export const tokenType = ["spl", "token2022", "erc20"] as const;
 export type TokenType = (typeof tokenType)[number];
 
-export const chainTokenType = {
+export const networkTokenType = {
   bip122: [],
   eip155: ["erc20"],
   solana: ["token"],
 } as const;
 
-export type ChainTokenType<TNamespace extends keyof typeof chainTokenType> =
-  | (typeof chainTokenType)[TNamespace][number]
+export type NetworkTokenType<TNamespace extends keyof typeof networkTokenType> =
+  | (typeof networkTokenType)[TNamespace][number]
   | "slip44";
 
-export type Token<TChain extends Chain = Chain> =
-  TChain extends `${infer TNamespace}:${string}`
-    ? TNamespace extends keyof typeof chainTokenType
-      ? `${TChain}/${ChainTokenType<TNamespace>}:${string}`
+export type Token<TNetwork extends Network = Network> =
+  TNetwork extends `${infer TNamespace}:${string}`
+    ? TNamespace extends keyof typeof networkTokenType
+      ? `${TNetwork}/${NetworkTokenType<TNamespace>}:${string}`
       : never
     : never;
 
 export type TokenInfo<
-  TChain extends Chain,
-  TToken extends Token<TChain> = Token<TChain>,
+  TNetwork extends Network,
+  TToken extends Token<TNetwork> = Token<TNetwork>,
 > = {
   id: TToken;
   name: string;
   symbol: string;
   decimals: number;
   address: string;
-  chainId: TToken extends `${infer ChainId}/${string}` ? ChainId : never;
+  networkId: TToken extends `${infer NetworkId}/${string}` ? NetworkId : never;
 };
 
 export type SelectedToken<TToken extends Token> = {

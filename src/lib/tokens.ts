@@ -1,10 +1,10 @@
 import { svgs } from "@web3icons/core";
 
 import type {
-  AvailableChain,
-  AvailableMainnetChain,
-  AvailableTestnetChain,
-} from "@/config/chains";
+  AvailableMainnetNetwork,
+  AvailableNetwork,
+  AvailableTestnetNetwork,
+} from "@/config/networks";
 import type {
   AvailableMainnetToken,
   AvailableTestnetToken,
@@ -17,13 +17,13 @@ import {
 } from "@/config/tokens";
 
 export const getToken = (
-  id: Token<AvailableChain>,
+  id: Token<AvailableNetwork>,
   cluster: Cluster = "mainnet"
-): TokenInfo<AvailableChain> | null => {
-  const [chainId] = id.split("/") as [
-    AvailableMainnetChain | AvailableTestnetChain,
+): TokenInfo<AvailableNetwork> | null => {
+  const [networkId] = id.split("/") as [
+    AvailableMainnetNetwork | AvailableTestnetNetwork,
   ];
-  if (!chainId) return null;
+  if (!networkId) return null;
 
   if (cluster === "mainnet") {
     const resolvedToken = availableMainnetTokens[id as AvailableMainnetToken];
@@ -32,7 +32,7 @@ export const getToken = (
       ? {
           ...resolvedToken,
           id,
-          chainId,
+          networkId,
         }
       : null;
   }
@@ -43,7 +43,7 @@ export const getToken = (
     ? {
         ...resolvedToken,
         id,
-        chainId,
+        networkId,
       }
     : null;
 };
