@@ -17,7 +17,7 @@ import {
   availableMainnetTokenByChains,
   availableTestnetTokenByChains,
 } from "@/config/tokens";
-import { useNetwork } from "@/hooks/use-network";
+import { useCluster } from "@/hooks/use-cluster";
 import { getChain, getChainIconSrc } from "@/lib/chains";
 import { typedValues } from "@/lib/objects";
 import { getToken, getTokenIconSrc } from "@/lib/tokens";
@@ -241,7 +241,7 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
   token,
   onTokenSelect,
 }) => {
-  const { network } = useNetwork();
+  const { cluster } = useCluster();
   const [chainFilter, setChainFilter] = useState(() => {
     if (!token) return null;
     const [chainId] = token.split("/");
@@ -250,25 +250,25 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
   });
   const chains = useMemo(
     () =>
-      network === "mainnet"
+      cluster === "mainnet"
         ? typedValues(availableMainnetChains)
         : typedValues(availableTestnetChains),
-    [network]
+    [cluster]
   );
   const tokens = useMemo(
     () =>
       chainFilter
-        ? network === "mainnet"
+        ? cluster === "mainnet"
           ? availableMainnetTokenByChains[
               chainFilter.id as AvailableMainnetChain
             ]
           : availableTestnetTokenByChains[
               chainFilter.id as AvailableTestnetChain
             ]
-        : network === "mainnet"
+        : cluster === "mainnet"
           ? typedValues(availableMainnetTokenByChains).flat()
           : typedValues(availableTestnetTokenByChains).flat(),
-    [network, chainFilter]
+    [cluster, chainFilter]
   );
 
   useEffect(() => {

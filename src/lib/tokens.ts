@@ -9,7 +9,7 @@ import type {
   AvailableMainnetToken,
   AvailableTestnetToken,
 } from "@/config/tokens";
-import type { Network } from "@/types/network";
+import type { Cluster } from "@/types/cluster";
 import type { Token, TokenInfo } from "@/types/token";
 import {
   availableMainnetTokens,
@@ -18,14 +18,14 @@ import {
 
 export const getToken = (
   id: Token<AvailableChain>,
-  network: Network = "mainnet"
+  cluster: Cluster = "mainnet"
 ): TokenInfo<AvailableChain> | null => {
   const [chainId] = id.split("/") as [
     AvailableMainnetChain | AvailableTestnetChain,
   ];
   if (!chainId) return null;
 
-  if (network === "mainnet") {
+  if (cluster === "mainnet") {
     const resolvedToken = availableMainnetTokens[id as AvailableMainnetToken];
 
     return resolvedToken

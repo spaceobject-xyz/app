@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 
 import { ThemeProvider } from "@/components/theme-provider.tsx";
-import { NetworkProvider } from "@/context/network";
+import { ClusterProvider } from "@/context/cluster.ts";
 
 import { routeTree } from "./routeTree.gen.ts";
 
@@ -27,9 +27,9 @@ declare module "@tanstack/react-router" {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <NetworkProvider>
+      <ClusterProvider>
         <RouterProvider router={router} />
-      </NetworkProvider>
+      </ClusterProvider>
     </ThemeProvider>
   </StrictMode>
 );

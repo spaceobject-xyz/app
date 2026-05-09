@@ -6,7 +6,7 @@ import type {
   AvailableTestnetChain,
 } from "@/config/chains";
 import type { ChainInfo } from "@/types/chain";
-import type { Network } from "@/types/network";
+import type { Cluster } from "@/types/cluster";
 import {
   availableMainnetChains,
   availableTestnetChains,
@@ -14,9 +14,9 @@ import {
 
 export const getChain = <TChain extends AvailableChain>(
   id: TChain,
-  network: Network = "mainnet"
+  cluster: Cluster = "mainnet"
 ): ChainInfo<TChain> | null => {
-  if (network === "mainnet") {
+  if (cluster === "mainnet") {
     const resolvedChain = availableMainnetChains[id as AvailableMainnetChain];
 
     return resolvedChain
