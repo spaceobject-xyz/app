@@ -30,5 +30,5 @@ export type Network = (typeof networks)[number];
 export type NetworkInfo<TNetwork extends Network> = {
   id: TNetwork;
   name: string;
-  slug: string;
+  imageUrl: string;
 };

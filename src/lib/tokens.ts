@@ -1,5 +1,3 @@
-import { svgs } from "@web3icons/core";
-
 import type {
   AvailableMainnetNetwork,
   AvailableNetwork,
@@ -46,11 +44,4 @@ export const getToken = (
         networkId,
       }
     : null;
-};
-
-export const getTokenIconSrc = (symbol: string): string | null => {
-  const key = symbol.toLowerCase() as keyof typeof svgs.tokens.branded;
-  const svg = svgs.tokens.branded[key]?.default;
-  if (!svg) return null;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 };

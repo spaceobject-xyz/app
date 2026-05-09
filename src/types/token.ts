@@ -29,6 +29,7 @@ export type TokenInfo<
   symbol: string;
   decimals: number;
   address: string;
+  imageUrl: string;
   networkId: TToken extends `${infer NetworkId}/${string}` ? NetworkId : never;
 };
 

@@ -1,5 +1,3 @@
-import { svgs } from "@web3icons/core";
-
 import type {
   AvailableMainnetNetwork,
   AvailableNetwork,
@@ -37,11 +35,4 @@ export const getNetwork = <TNetwork extends AvailableNetwork>(
         id,
       }
     : null;
-};
-
-export const getNetworkIconSrc = (slug: string): string | null => {
-  const key = slug.toLowerCase() as keyof typeof svgs.networks.branded;
-  const svg = svgs.networks.branded[key]?.default;
-  if (!svg) return null;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 };

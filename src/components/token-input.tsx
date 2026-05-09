@@ -18,9 +18,9 @@ import {
   availableTestnetTokenByNetworks,
 } from "@/config/tokens";
 import { useCluster } from "@/hooks/use-cluster";
-import { getNetwork, getNetworkIconSrc } from "@/lib/networks";
+import { getNetwork } from "@/lib/networks";
 import { typedValues } from "@/lib/objects";
-import { getToken, getTokenIconSrc } from "@/lib/tokens";
+import { getToken } from "@/lib/tokens";
 
 import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
@@ -95,19 +95,11 @@ export const TokenInput: React.FC<TokenInputProps> = ({
             onClick={() => setTokenSelectorDialogOpen(true)}
           >
             <Avatar size="lg">
-              <AvatarImage
-                src={
-                  getTokenIconSrc(tokenInfo?.symbol ?? "invalid") ?? undefined
-                }
-              />
+              <AvatarImage src={tokenInfo?.imageUrl} />
               <AvatarFallback>{tokenInfo?.name.at(0) ?? "?"}</AvatarFallback>
               {networkInfo && (
-                <AvatarBadge className="bg-background text-foreground">
-                  <img
-                    className="scale-125"
-                    src={getNetworkIconSrc(networkInfo.slug) ?? undefined}
-                    alt={networkInfo.slug}
-                  />
+                <AvatarBadge>
+                  <img src={networkInfo.imageUrl} alt={networkInfo.id} />
                 </AvatarBadge>
               )}
             </Avatar>
@@ -319,9 +311,7 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
                   <button type="button" className="hover:bg-secondary/30">
                     <ItemHeader className="items-center justify-center">
                       <Avatar className="size-12">
-                        <AvatarImage
-                          src={getNetworkIconSrc(network.slug) ?? undefined}
-                        />
+                        <AvatarImage src={network.imageUrl} />
                         <AvatarFallback>{network.name.at(0)}</AvatarFallback>
                       </Avatar>
                     </ItemHeader>
@@ -337,7 +327,7 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
           <Separator />
 
           <div className="flex flex-col w-full items-center gap-2 h-96 overflow-y-auto">
-            {tokens.map(({ id, name, symbol, networkId }) => {
+            {tokens.map(({ id, name, symbol, networkId, imageUrl }) => {
               const networkInfo = getNetwork(networkId);
 
               return (
@@ -352,19 +342,13 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
                     <button type="button">
                       <ItemMedia>
                         <Avatar size="lg">
-                          <AvatarImage
-                            src={getTokenIconSrc(symbol) ?? undefined}
-                          />
+                          <AvatarImage src={imageUrl} />
                           <AvatarFallback>{name.at(0) ?? "?"}</AvatarFallback>
                           {networkInfo && (
-                            <AvatarBadge className="bg-background text-foreground">
+                            <AvatarBadge>
                               <img
-                                className="scale-125"
-                                src={
-                                  getNetworkIconSrc(networkInfo.slug) ??
-                                  undefined
-                                }
-                                alt={networkInfo.slug}
+                                src={networkInfo.imageUrl}
+                                alt={networkInfo.id}
                               />
                             </AvatarBadge>
                           )}
