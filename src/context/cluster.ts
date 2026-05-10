@@ -11,17 +11,24 @@ export const ClusterContext = React.createContext<
   ClusterContextValue | undefined
 >(undefined);
 
-const STORAGE_KEY = "cluster";
-const DEFAULT_NETWORK: Cluster = "mainnet";
+const STORAGE_KEY = "__spaceobject_cluster";
+const DEFAULT_CLUSTER: Cluster = "mainnet";
 
 function isCluster(value: string | null): value is Cluster {
   return value === "mainnet" || value === "testnet";
 }
 
-export function ClusterProvider({ children }: { children: React.ReactNode }) {
+export type ClusterProviderProps = React.PropsWithChildren<{
+  cluster?: Cluster;
+}>;
+
+export function ClusterProvider({
+  children,
+  cluster: defaultCluster = DEFAULT_CLUSTER,
+}: ClusterProviderProps) {
   const [cluster, setClusterState] = React.useState<Cluster>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return isCluster(stored) ? stored : DEFAULT_NETWORK;
+    return isCluster(stored) ? stored : defaultCluster;
   });
 
   const setCluster = React.useCallback((next: Cluster) => {

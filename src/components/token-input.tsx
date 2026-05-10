@@ -56,10 +56,14 @@ export const TokenInput: React.FC<TokenInputProps> = ({
   balance,
   readOnly,
 }) => {
-  const tokenInfo = useMemo(() => (token ? getToken(token) : null), [token]);
+  const { cluster } = useCluster();
+  const tokenInfo = useMemo(
+    () => (token ? getToken(token, cluster) : null),
+    [token, cluster]
+  );
   const networkInfo = useMemo(
-    () => (tokenInfo ? getNetwork(tokenInfo.networkId) : null),
-    [tokenInfo]
+    () => (tokenInfo ? getNetwork(tokenInfo.networkId, cluster) : null),
+    [tokenInfo, cluster]
   );
 
   const [tokenSelectorDialogOpen, setTokenSelectorDialogOpen] =
@@ -178,7 +182,7 @@ export const TokenInput: React.FC<TokenInputProps> = ({
 export interface TokenSelectorDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  token?: AvailableToken | null;
+  token: AvailableToken | null;
   onTokenSelected: (token: AvailableToken | null) => void;
 }
 
@@ -193,7 +197,7 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
     if (!token) return null;
     const [networkId] = token.split("/");
 
-    return getNetwork(networkId as AvailableNetwork);
+    return getNetwork(networkId as AvailableNetwork, cluster);
   });
   const networks = useMemo(
     () =>
@@ -223,8 +227,8 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
     if (!token) return setNetworkFilter(null);
 
     const [networkId] = token.split("/");
-    setNetworkFilter(getNetwork(networkId as AvailableNetwork));
-  }, [open, token]);
+    setNetworkFilter(getNetwork(networkId as AvailableNetwork, cluster));
+  }, [open, token, cluster]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -271,7 +275,9 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
                       </Avatar>
                     </ItemHeader>
                     <ItemContent className="items-center justify-center">
-                      <ItemTitle>{network.name}</ItemTitle>
+                      <ItemTitle className="line-clamp-1">
+                        {network.name}
+                      </ItemTitle>
                     </ItemContent>
                   </button>
                 }
@@ -284,7 +290,7 @@ export const TokenSelectorDialog: React.FC<TokenSelectorDialogProps> = ({
           <div className="flex flex-col w-full items-center gap-2 h-96 overflow-y-auto">
             {tokens.map(
               ({ id, name, symbol, networkId, networkBadge, imageUrl }) => {
-                const networkInfo = getNetwork(networkId);
+                const networkInfo = getNetwork(networkId, cluster);
 
                 return (
                   <Item
