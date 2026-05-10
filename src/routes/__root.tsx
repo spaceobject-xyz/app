@@ -11,6 +11,7 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -24,6 +25,7 @@ function RootComponent() {
       <main className="flex w-full p-4 pt-22 min-h-screen">
         <Outlet />
       </main>
+      <Toaster />
     </>
   );
 }
