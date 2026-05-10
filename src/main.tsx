@@ -1,7 +1,11 @@
+import {
+  getDefaultConfig,
+  getDefaultMobileConfig,
+  ConnectorProvider as SolanaConnectorProvider,
+} from "@solana/connector/react";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
 import "./index.css";
 
 import { ThemeProvider } from "@/components/theme-provider.tsx";
@@ -16,6 +20,23 @@ const router = createRouter({
   scrollRestoration: true,
 });
 
+const solanaConfig = getDefaultConfig({
+  autoConnect: true,
+  enableMobile: true,
+  appName: "Space Object",
+  appUrl: window?.location?.origin ?? "https://app.spaceobject.xyz",
+  network: "devnet",
+});
+
+const solanaMobileConfig = getDefaultMobileConfig({
+  appName: solanaConfig.appName ?? "Space Object",
+  appUrl:
+    solanaConfig.appUrl ??
+    window?.location?.origin ??
+    "https://app.spaceobject.xyz",
+  network: "devnet",
+});
+
 // Register things for typesafety
 declare module "@tanstack/react-router" {
   interface Register {
@@ -25,11 +46,16 @@ declare module "@tanstack/react-router" {
 
 // biome-ignore lint/style/noNonNullAssertion: require element with id: root
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider>
-      <ClusterProvider>
-        <RouterProvider router={router} />
-      </ClusterProvider>
-    </ThemeProvider>
-  </StrictMode>
+  <ThemeProvider>
+    <ClusterProvider cluster="testnet">
+      <SolanaConnectorProvider
+        config={solanaConfig}
+        mobile={solanaMobileConfig}
+      >
+        <StrictMode>
+          <RouterProvider router={router} />
+        </StrictMode>
+      </SolanaConnectorProvider>
+    </ClusterProvider>
+  </ThemeProvider>
 );

@@ -1,7 +1,9 @@
-import { ChevronDown, Settings01Icon } from "@hugeicons/core-free-icons";
+import { ChevronDown } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useWalletAdapterCompat } from "@solana/connector/compat";
+import { useConnector, useTransactionSigner } from "@solana/connector/react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { TokenInput } from "@/components/token-input";
 import { Button } from "@/components/ui/button";
@@ -27,18 +29,33 @@ function Swap() {
   const { cluster } = useCluster();
   const { from, to } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const { disconnectWallet } = useConnector();
+  const { signer } = useTransactionSigner();
+  const { signMessage } = useWalletAdapterCompat(signer, disconnectWallet);
 
   const [sellAmount, setSellAmount] = useState<number | null>(null);
   const [buyAmount, setBuyAmount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!sellAmount) return setBuyAmount(null);
+
+      setBuyAmount(sellAmount * 0.5);
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [sellAmount]);
 
   return (
     <div className="w-full flex flex-col mx-auto items-center gap-4 md:pt-36">
       <div className="w-full md:max-w-xl flex flex-col items-center justify-center gap-2">
         <div className="flex w-full items-center justify-between gap-2">
           <h1 className="font-mono text-2xl">Swap</h1>
-          <Button variant="ghost" size="icon">
+          {/*<Button variant="ghost" size="icon">
             <HugeiconsIcon icon={Settings01Icon} />
-          </Button>
+          </Button>*/}
         </div>
         <div className="flex flex-col items-center justify-center gap-2">
           <TokenInput
@@ -102,7 +119,27 @@ function Swap() {
           />
         </div>
         <div className="flex w-full items-center justify-center gap-2">
-          <Button className="w-full" size="lg">
+          <Button
+            className="w-full"
+            size="lg"
+            disabled={!from || !to || !sellAmount || !buyAmount}
+            onClick={async () => {
+              if (!signMessage) return;
+
+              const signature = await signMessage(
+                new TextEncoder().encode(
+                  JSON.stringify({
+                    from,
+                    to,
+                    sellAmount,
+                    buyAmount,
+                  })
+                )
+              );
+
+              console.log(signature);
+            }}
+          >
             Swap
           </Button>
         </div>
