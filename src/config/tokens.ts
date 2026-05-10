@@ -127,6 +127,36 @@ export const availableTestnetTokens = defineTokens({
     networkId: "eip155:11155111",
     networkBadge: false,
   },
+  "eip155:11155111/erc20:0x1c7d4b196cb0c7b01d743fbc6116a902379c7238": {
+    id: "eip155:11155111/erc20:0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+    name: "USD Coin",
+    symbol: "USDC",
+    address: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+    decimals: 6,
+    imageUrl: "https://assets.spaceobject.xyz/logos/tokens/usdc.svg",
+    networkId: "eip155:11155111",
+    networkBadge: true,
+  },
+  "eip155:84532/slip44:60": {
+    id: "eip155:84532/slip44:60",
+    name: "Ethereum",
+    symbol: "ETH",
+    address: null,
+    decimals: 18,
+    imageUrl: "https://assets.spaceobject.xyz/logos/tokens/ethereum.svg",
+    networkId: "eip155:84532",
+    networkBadge: true,
+  },
+  "eip155:84532/erc20:0x036cbd53842c5426634e7929541ec2318f3dcf7e": {
+    id: "eip155:84532/erc20:0x036cbd53842c5426634e7929541ec2318f3dcf7e",
+    name: "USD Coin",
+    symbol: "USDC",
+    address: "0x036cbd53842c5426634e7929541ec2318f3dcf7e",
+    decimals: 6,
+    imageUrl: "https://assets.spaceobject.xyz/logos/tokens/usdc.svg",
+    networkId: "eip155:84532",
+    networkBadge: true,
+  },
 });
 
 export type AvailableMainnetToken = keyof typeof availableMainnetTokens;

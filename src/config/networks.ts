@@ -44,6 +44,11 @@ export const availableTestnetNetworks = {
     name: "Ethereum Sepolia",
     imageUrl: "https://assets.spaceobject.xyz/logos/networks/ethereum.svg",
   },
+  "eip155:84532": {
+    id: "eip155:84532",
+    name: "Base Sepolia",
+    imageUrl: "https://assets.spaceobject.xyz/logos/networks/base.svg",
+  },
 } as const satisfies NetworkInfoMap<TestnetNetwork>;
 export type AvailableTestnetNetwork = keyof typeof availableTestnetNetworks;
 
