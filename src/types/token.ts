@@ -28,7 +28,11 @@ export type TokenInfo<
   name: string;
   symbol: string;
   decimals: number;
-  address: string;
+  address: TToken extends `${TNetwork}/${infer TokenType}:${infer TokenAddress}`
+    ? TokenType extends "slip44"
+      ? null
+      : TokenAddress
+    : never;
   imageUrl: string;
   networkId: TToken extends `${infer NetworkId}/${string}` ? NetworkId : never;
   networkBadge: boolean;
