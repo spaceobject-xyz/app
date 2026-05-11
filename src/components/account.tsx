@@ -5,6 +5,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useConnector } from "@solana/connector/react";
+import { Link } from "@tanstack/react-router";
 
 import { trimAddress } from "@/lib/address";
 
@@ -40,10 +41,14 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({
         }
       />
       <DropdownMenuContent>
-        <DropdownMenuItem>
-          <HugeiconsIcon icon={Wallet01Icon} />
-          Wallet
-        </DropdownMenuItem>
+        <DropdownMenuItem
+          render={
+            <Link to="/wallet">
+              <HugeiconsIcon icon={Wallet01Icon} />
+              Wallet
+            </Link>
+          }
+        ></DropdownMenuItem>
         <DropdownMenuItem variant="destructive" onClick={disconnectWallet}>
           <HugeiconsIcon icon={Logout01Icon} />
           Disconnect
