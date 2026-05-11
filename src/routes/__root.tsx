@@ -25,7 +25,7 @@ function RootComponent() {
       <main className="flex w-full p-4 pt-22 min-h-screen">
         <Outlet />
       </main>
-      <Toaster />
+      <Toaster position="top-right" />
     </>
   );
 }
