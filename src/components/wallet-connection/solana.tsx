@@ -1,5 +1,5 @@
 import { useConnector } from "@solana/connector/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -17,15 +17,8 @@ export const SolanaWalletConnectDialog = ({
   onOpenChange,
   onConnect,
 }: SolanaWalletConnectDialogProps) => {
-  const { connectors, connectWallet, isError, isConnecting } = useConnector();
+  const { connectors, connectWallet, isConnecting } = useConnector();
   const [connectingTo, setConnectingTo] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (isError)
-      toast.error("Failed to connect to Solana wallet", {
-        position: "top-right",
-      });
-  }, [isError]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -48,6 +41,12 @@ export const SolanaWalletConnectDialog = ({
 
                   onConnect();
                   onOpenChange(false);
+                } catch (e) {
+                  const err = e as Error;
+
+                  toast.error(`Failed to connect to ${connector.name}`, {
+                    description: err.message,
+                  });
                 } finally {
                   setConnectingTo(null);
                 }
