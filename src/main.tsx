@@ -3,6 +3,7 @@ import {
   getDefaultMobileConfig,
   ConnectorProvider as SolanaConnectorProvider,
 } from "@solana/connector/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -37,6 +38,8 @@ const solanaMobileConfig = getDefaultMobileConfig({
   network: "devnet",
 });
 
+const queryClient = new QueryClient();
+
 // Register things for typesafety
 declare module "@tanstack/react-router" {
   interface Register {
@@ -52,9 +55,11 @@ createRoot(document.getElementById("root")!).render(
         config={solanaConfig}
         mobile={solanaMobileConfig}
       >
-        <StrictMode>
-          <RouterProvider router={router} />
-        </StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <StrictMode>
+            <RouterProvider router={router} />
+          </StrictMode>
+        </QueryClientProvider>
       </SolanaConnectorProvider>
     </ClusterProvider>
   </ThemeProvider>
